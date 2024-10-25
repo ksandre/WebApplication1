@@ -6,8 +6,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddSignalR();
-builder.Services.AddSingleton<RabbitMqListener>();
-builder.Services.AddHostedService<RabbitMqListenerService>();
+//builder.Services.AddSingleton<RabbitMqListener>();
+//builder.Services.AddHostedService<RabbitMqListenerService>();
 
 var app = builder.Build();
 
