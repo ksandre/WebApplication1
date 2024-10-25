@@ -22,11 +22,11 @@ if (app.Environment.IsDevelopment())
 // Add middleware in the correct order.
 app.UseHttpsRedirection();
 app.UseRouting();
-app.UseCors(options => options.WithOrigins("http://localhost:3000").AllowAnyHeader().WithMethods("GET", "POST").AllowCredentials());
+app.UseCors(options => options.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod().AllowCredentials());
 app.UseAuthorization();
 
 // Define routes directly on the `app` object.
 app.MapControllers();
-app.MapHub<ChatHub>("/chat-hub");
+app.MapHub<ChatHub>("/Chat");
 
 app.Run();
