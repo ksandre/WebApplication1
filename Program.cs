@@ -20,6 +20,15 @@ var app = builder.Build();
 //}
 
 // Add middleware in the correct order.
+var webSocketOptions = new WebSocketOptions
+{
+    KeepAliveInterval = TimeSpan.FromMinutes(2)
+};
+
+webSocketOptions.AllowedOrigins.Add("http://localhost:3000");
+
+app.UseWebSockets(webSocketOptions);
+
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseCors(options => options.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod().AllowCredentials());
