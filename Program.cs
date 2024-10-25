@@ -5,7 +5,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSignalR();
+builder.Services.AddSignalR(options =>
+{
+    options.ClientTimeoutInterval = TimeSpan.FromSeconds(30); // Time after which the server will close the connection if it does not hear from the client
+    options.KeepAliveInterval = TimeSpan.FromSeconds(10);     // Keep-alive interval for server-to-client messages
+    options.HandshakeTimeout = TimeSpan.FromSeconds(15);
+});
 //builder.Services.AddSingleton<RabbitMqListener>();
 //builder.Services.AddHostedService<RabbitMqListenerService>();
 
