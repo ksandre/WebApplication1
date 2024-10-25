@@ -12,12 +12,12 @@ builder.Services.AddHostedService<RabbitMqListenerService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
     app.UseSwaggerUI();
     app.UseDeveloperExceptionPage();
-}
+//}
 
 // Add middleware in the correct order.
 app.UseHttpsRedirection();
