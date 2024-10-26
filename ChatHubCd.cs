@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 
-public class ChatHub : Hub
+public class ChatHubCd : Hub
 {
     // Method for clients to send messages, which will then be broadcasted to all other clients
     public async Task SendMessage(string message)
@@ -15,10 +15,12 @@ public class ChatHub : Hub
         var httpContext = Context.GetHttpContext();
         var paymentId = httpContext.Request.Query["paymentId"].ToString();
 
-        // Store the paymentId and connectionId in Redis
-        await ConnectionMapping.AddAsync(paymentId, Context.ConnectionId);
+        // Store the userId and connectionId in ConnectionMapping
+        ConnectionMappingCd.Add(paymentId, Context.ConnectionId);
 
         await base.OnConnectedAsync();
+
+        System.Diagnostics.Debug.WriteLine($"ConnectionId {paymentId}/{Context.ConnectionId}");
     }
 
     public override async Task OnDisconnectedAsync(Exception exception)
@@ -26,10 +28,10 @@ public class ChatHub : Hub
         var httpContext = Context.GetHttpContext();
         var paymentId = httpContext.Request.Query["paymentId"].ToString();
 
-        // Remove the paymentId and connectionId from Redis
-        await ConnectionMapping.RemoveAsync(paymentId);
+        // Remove the userId and connectionId from ConnectionMapping
+        ConnectionMappingCd.Remove(paymentId);
 
         await base.OnDisconnectedAsync(exception);
-    }
 
+    }
 }

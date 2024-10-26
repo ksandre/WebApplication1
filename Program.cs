@@ -1,5 +1,9 @@
 var builder = WebApplication.CreateBuilder(args);
 
+// Load Redis connection string from configuration
+var redisConnectionString = builder.Configuration["Redis:ConnectionString"];
+ConnectionMapping.Initialize(redisConnectionString);
+
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

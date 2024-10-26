@@ -55,7 +55,8 @@ public class RabbitMqListener
 
             if (message != null)
             {
-                var connectionId = ConnectionMapping.GetConnectionId(message.ShortTransactionId);
+                //var connectionId = ConnectionMappingCd.GetConnectionId(message.ShortTransactionId);
+                var connectionId = await ConnectionMapping.GetConnectionIdAsync(message.ShortTransactionId);
 
                 if (connectionId != null)
                 {

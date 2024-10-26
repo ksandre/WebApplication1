@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 
-public static class ConnectionMapping
+public static class ConnectionMappingCd
 {
     private static readonly ConcurrentDictionary<string, string> _connections = new ConcurrentDictionary<string, string>();
 
