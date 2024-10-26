@@ -3,6 +3,25 @@ using System.Text;
 using Microsoft.AspNetCore.SignalR;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+public enum Status
+{
+    Init,
+    Send,
+    Completed,
+}
+
+// Define your message class to match the JSON structure
+public class MyMessage
+{
+    [JsonPropertyName("shortTransactionId")]
+    public string ShortTransactionId { get; set; }
+    [JsonPropertyName("status")]
+    public Status Status { get; set; }
+    // Add other properties based on your JSON structure
+}
 
 public class RabbitMqListener
 {
@@ -27,11 +46,24 @@ public class RabbitMqListener
         consumer.Received += async (model, ea) =>
         {
             var body = ea.Body.ToArray();
-            var message = Encoding.UTF8.GetString(body);
+            // Deserialize the JSON message body into an instance of MyMessage
+            var messageString = Encoding.UTF8.GetString(body);
+            var message = JsonSerializer.Deserialize<MyMessage>(messageString);
 
             // Send the received RabbitMQ message to all connected SignalR clients
-            await _hubContext.Clients.All.SendAsync("ReceiveMessage", "RabbitMQ", message);
-            System.Diagnostics.Debug.WriteLine($"ReceiveMessage {message}");
+            //await _hubContext.Clients.All.SendAsync("ReceiveMessage", message);
+
+            if (message != null)
+            {
+                var connectionId = ConnectionMapping.GetConnectionId(message.ShortTransactionId);
+
+                if (connectionId != null)
+                {
+                    await _hubContext.Clients.Client(connectionId).SendAsync("ReceiveMessage", JsonSerializer.Serialize(message));
+                }
+                System.Diagnostics.Debug.WriteLine($"connectionId {connectionId}");
+                System.Diagnostics.Debug.WriteLine($"ReceiveMessage {JsonSerializer.Serialize(message)}");
+            }
         };
 
         _channel.BasicConsume(queue: "chat_queue", autoAck: true, consumer: consumer);

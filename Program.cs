@@ -8,11 +8,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR(options =>
 {
     options.ClientTimeoutInterval = TimeSpan.FromSeconds(30); // Time after which the server will close the connection if it does not hear from the client
-    options.KeepAliveInterval = TimeSpan.FromSeconds(10);     // Keep-alive interval for server-to-client messages
+    options.KeepAliveInterval = TimeSpan.FromMinutes(5);     // Keep-alive interval for server-to-client messages
     options.HandshakeTimeout = TimeSpan.FromSeconds(15);
 });
-//builder.Services.AddSingleton<RabbitMqListener>();
-//builder.Services.AddHostedService<RabbitMqListenerService>();
+builder.Services.AddSingleton<RabbitMqListener>();
+builder.Services.AddHostedService<RabbitMqListenerService>();
 
 var app = builder.Build();
 
@@ -25,16 +25,8 @@ var app = builder.Build();
 //}
 
 // Add middleware in the correct order.
-var webSocketOptions = new WebSocketOptions
-{
-    KeepAliveInterval = TimeSpan.FromMinutes(2)
-};
 
-webSocketOptions.AllowedOrigins.Add("http://localhost:3000");
-
-app.UseWebSockets(webSocketOptions);
-
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseRouting();
 app.UseCors(options => options.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod().AllowCredentials());
 app.UseAuthorization();
